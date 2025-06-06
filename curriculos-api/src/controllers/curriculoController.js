@@ -3,7 +3,7 @@ const db = require('../db');
 // GET todos
 async function getTodosCurriculos(req, res) {
   try {
-    const pessoas = await db.query('SELECT * FROM pessoa');
+    const pessoas = await db.query('SELECT * FROM "Pessoa"');
     res.json(pessoas.rows);
   } catch (err) {
     res.status(500).json({ erro: err.message });
@@ -14,14 +14,14 @@ async function getTodosCurriculos(req, res) {
 async function getCurriculoPorId(req, res) {
   const { id } = req.params;
   try {
-    const pessoa = await db.query('SELECT * FROM pessoa WHERE id = $1', [id]);
+    const pessoa = await db.query('SELECT * FROM "Pessoa" WHERE id = $1', [id]);
     if (pessoa.rows.length === 0) {
       return res.status(404).json({ mensagem: 'Currículo não encontrado' });
     }
 
-    const formacoes = await db.query('SELECT * FROM formacao WHERE pessoa_id = $1', [id]);
-    const experiencias = await db.query('SELECT * FROM experiencia WHERE pessoa_id = $1', [id]);
-    const projetos = await db.query('SELECT * FROM projeto WHERE pessoa_id = $1', [id]);
+    const formacoes = await db.query('SELECT * FROM "Formacao" WHERE pessoa_id = $1', [id]);
+    const experiencias = await db.query('SELECT * FROM "Experiencia" WHERE Pessoa_id = $1', [id]);
+    const projetos = await db.query('SELECT * FROM "Projeto" WHERE pessoa_id = $1', [id]);
 
     res.json({
       ...pessoa.rows[0],
@@ -39,7 +39,7 @@ async function criarCurriculo(req, res) {
   const { nome, email, telefone } = req.body;
   try {
     const resultado = await db.query(
-      'INSERT INTO pessoa (nome, email, telefone) VALUES ($1, $2, $3) RETURNING *',
+      'INSERT INTO "Pessoa" (nome, email, telefone) VALUES ($1, $2, $3) RETURNING *',
       [nome, email, telefone]
     );
     res.status(201).json(resultado.rows[0]);
@@ -55,7 +55,7 @@ async function atualizarCurriculo(req, res) {
 
   try {
     const resultado = await db.query(
-      `UPDATE pessoa
+      `UPDATE "Pessoa"
        SET nome = $1, email = $2, telefone = $3, cidade = $4, resumo = $5
        WHERE id = $6
        RETURNING *`,
@@ -76,10 +76,10 @@ async function deletarCurriculo(req, res) {
   const { id } = req.params;
 
   try {
-    await db.query('DELETE FROM formacao WHERE pessoa_id = $1', [id]);
-    await db.query('DELETE FROM experiencia WHERE pessoa_id = $1', [id]);
-    await db.query('DELETE FROM projeto WHERE pessoa_id = $1', [id]);
-    const resultado = await db.query('DELETE FROM pessoa WHERE id = $1 RETURNING *', [id]);
+    await db.query('DELETE FROM "Formacao" WHERE Pessoa_id = $1', [id]);
+    await db.query('DELETE FROM "Experiencia" WHERE pessoa_id = $1', [id]);
+    await db.query('DELETE FROM "Projeto" WHERE Pessoa_id = $1', [id]);
+    const resultado = await db.query('DELETE FROM "Pessoa" WHERE id = $1 RETURNING *', [id]);
 
     if (resultado.rows.length === 0) {
       return res.status(404).json({ mensagem: 'Currículo não encontrado' });
