@@ -1,13 +1,14 @@
 const { Pool } = require('pg');
-require('dotenv').config(); // Carrega as variáveis do .env
+require('dotenv').config();
 
+// Opção 1: Usando variáveis separadas
 const pool = new Pool({
-  user: process.env.PGUSER,
-  password: process.env.PGPASSWORD,
-  host: process.env.PGHOST,
-  port: parseInt(process.env.PGPORT, 10),
-  database: process.env.PGDATABASE,
-  
+  host: process.env.SUPABASE_DB_HOST,
+  port: process.env.SUPABASE_DB_PORT,
+  database: process.env.SUPABASE_DB_NAME,
+  user: process.env.SUPABASE_DB_USER,
+  password: process.env.SUPABASE_DB_PASSWORD,
+  ssl: {
+    rejectUnauthorized: false // Obrigatório para Supabase
+  }
 });
-
-module.exports = pool;
