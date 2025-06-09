@@ -14,18 +14,14 @@ app.use('/api/curriculos', curriculoRoutes);
 // Rota de health check
 app.get('/', async (req, res) => {
   try {
-    // Teste REAL do banco de dados
-    const result = await pool.query('SELECT 1+1 AS test');
-    
+    const result = await pool.query('SELECT COUNT(*) FROM pessoa');
+
     res.json({
       status: 'online',
       db: 'conectado e operacional',
       total_pessoas: result.rows[0].count,
-      supabase_config: {
-        host: process.env.SUPABASE_DB_HOST,
-        database: process.env.SUPABASE_DB_NAME,
-        ssl: process.env.NODE_ENV === 'production' ? 'ativo' : 'desativado'
-      }
+      ambiente: process.env.NODE_ENV,
+      ssl: process.env.NODE_ENV === 'production' ? 'ativo' : 'desativado'
     });
   } catch (err) {
     res.status(500).json({
