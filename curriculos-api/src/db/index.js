@@ -1,14 +1,11 @@
-const { Pool } = require('pg');
 require('dotenv').config();
+const { Pool } = require('pg');
 
-// Opção 1: Usando variáveis separadas
 const pool = new Pool({
-  host: process.env.SUPABASE_DB_HOST,
-  port: process.env.SUPABASE_DB_PORT,
-  database: process.env.SUPABASE_DB_NAME,
-  user: process.env.SUPABASE_DB_USER,
-  password: process.env.SUPABASE_DB_PASSWORD,
+  connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false // Obrigatório para Supabase
-  }
+    rejectUnauthorized: false, 
+  },
 });
+
+module.exports = pool;
