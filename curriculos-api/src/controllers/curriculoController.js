@@ -40,7 +40,7 @@ async function criarCurriculo(req, res) {
   try {
     const resultado = await pool.query(
       'INSERT INTO "pessoa" (nome, email, telefone, cidade, estado, resumo) VALUES ($1, $2, $3) RETURNING *',
-      [nome, email, telefone]
+      [nome, email, telefone, cidade, estado, resumo ]
     );
     res.status(201).json(resultado.rows[0]);
   } catch (err) {
@@ -56,10 +56,10 @@ async function atualizarCurriculo(req, res) {
   try {
     const resultado = await pool.query(
       `UPDATE "pessoa"
-       SET nome = $1, email = $2, telefone = $3, cidade = $4, resumo = $5
+       SET nome = $1, email = $2, telefone = $3, cidade = $4, estado =$5, resumo = $5
        WHERE id = $6
        RETURNING *`,
-      [nome, email, telefone, cidade, resumo, id]
+      [nome, email, telefone, cidade, estado, resumo, id]
     );
 
     if (resultado.rowCount === 0) {
