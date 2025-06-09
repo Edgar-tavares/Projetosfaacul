@@ -36,7 +36,7 @@ async function getCurriculoPorId(req, res) {
 
 // POST (Criar)
 async function criarCurriculo(req, res) {
-  const { nome, email, telefone } = req.body;
+  const { nome, email, telefone, cidade, estado, resumo } = req.body;
   try {
     const resultado = await pool.query(
       'INSERT INTO "pessoa" (nome, email, telefone, cidade, estado, resumo) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
