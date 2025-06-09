@@ -1,6 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
+const pool = require('./db'); 
 
 const app = express();
 const curriculoRoutes = require('./routes/curriculo');
@@ -11,8 +12,29 @@ app.use(express.json());
 app.use('/api/curriculos', curriculoRoutes);
 
 // Rota de health check
-app.get('/', (req, res) => {
-  res.json({ status: 'online', db: process.env.SUPABASE_DB_HOST ? 'conectado' : 'não configurado' });
+app.get('/', async (req, res) => {
+  try {
+    // Teste REAL do banco de dados
+    const result = await pool.query('SELECT 1+1 AS test');
+    
+    res.json({
+      status: 'online',
+      db: 'conectado e operacional',
+      total_pessoas: result.rows[0].count,
+      supabase_config: {
+        host: process.env.SUPABASE_DB_HOST,
+        database: process.env.SUPABASE_DB_NAME,
+        ssl: process.env.NODE_ENV === 'production' ? 'ativo' : 'desativado'
+      }
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'online',
+      db: 'erro na conexão',
+      error: err.message,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
+  }
 });
 
 module.exports = app;
