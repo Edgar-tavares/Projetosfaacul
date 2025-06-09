@@ -39,7 +39,7 @@ async function criarCurriculo(req, res) {
   const { nome, email, telefone } = req.body;
   try {
     const resultado = await pool.query(
-      'INSERT INTO "pessoa" (nome, email, telefone) VALUES ($1, $2, $3) RETURNING *',
+      'INSERT INTO "pessoa" (nome, email, telefone, cidade, estado, resumo) VALUES ($1, $2, $3) RETURNING *',
       [nome, email, telefone]
     );
     res.status(201).json(resultado.rows[0]);
